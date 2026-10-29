@@ -31,10 +31,18 @@ export default function Camera() {
   }
 
   async function proceed() {
-    if (!captured) return
+    const image = captured || localStorage.getItem('skinstric-image')
+    if (!image || loading) return
     setLoading(true)
-    try { await analyzeImage(captured); navigate('/select') }
-    catch (err) { setError(err.message); setLoading(false) }
+    setError('')
+    try {
+      await analyzeImage(image)
+      navigate('/select')
+    } catch (err) {
+      setError(err.message || 'Unable to analyze this image. Please retake it and try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function retry() {
@@ -55,7 +63,7 @@ export default function Camera() {
       {!captured && <span className="take-picture-label">TAKE PICTURE</span>}
       <p className="shot-status">{captured ? 'GREAT SHOT!' : ''}</p>
       <div className="photo-tips"><span>TO GET BETTER RESULTS MAKE SURE TO HAVE</span><div>◇ NEUTRAL EXPRESSION　 ◇ FRONTAL POSE　 ◇ ADEQUATE LIGHTING</div></div>
-      {captured && <div className="camera-actions"><button onClick={retry}>RETAKE</button><button onClick={proceed} disabled={loading}>{loading ? 'ANALYZING...' : 'PROCEED'}</button></div>}
+      {captured && <div className="camera-actions"><button type="button" onClick={retry} disabled={loading}>RETAKE</button><button type="button" onClick={proceed} disabled={loading}>{loading ? 'ANALYZING...' : 'PROCEED'}</button></div>}
       {error && <p className="camera-error">{error}</p>}
       <div className="bottom-nav light"><NavButton to="/result" direction="back" label="BACK" /></div>
     </main>

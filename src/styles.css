@@ -13,17 +13,24 @@ a { color: inherit; text-decoration: none; }
 .section-tag { font-size: 10px; color: #8b8d90; }
 .code-button { border: 0; color: white; background: #1a1b1c; padding: 10px 14px; font-size: 10px; cursor: pointer; }
 .home-page { height: calc(100vh - 64px); min-height: 560px; display: grid; place-items: center; position: relative; }
-.hero-copy { text-align: center; z-index: 2; }
+.hero-copy { text-align: center; z-index: 2; animation: hero-reveal 1.05s cubic-bezier(.22,1,.36,1) both; }
 .hero-copy h1 { margin: 0; font-size: clamp(58px, 8.8vw, 132px); font-weight: 300; line-height: .82; letter-spacing: -.08em; transform: translateY(-4%); }
 .hero-copy p { position: absolute; left: 32px; bottom: 30px; width: 330px; margin: 0; text-align: left; text-transform: uppercase; font-size: 10px; line-height: 1.5; letter-spacing: .01em; }
-.experience-link { position: absolute; right: 46px; display: flex; align-items: center; gap: 18px; font-size: 12px; font-weight: 500; z-index: 4; }
+.experience-link, .discover-link { position: absolute; display: flex; align-items: center; gap: 18px; font-size: 12px; font-weight: 500; z-index: 4; transition: gap .3s ease, opacity .3s ease; }
+.experience-link { right: 46px; animation: enter-from-right .9s .35s cubic-bezier(.22,1,.36,1) both; }
+.discover-link { left: 46px; animation: enter-from-left .9s .35s cubic-bezier(.22,1,.36,1) both; }
+.experience-link:hover, .discover-link:hover { gap: 24px; }
 .mini-diamond, .nav-diamond { width: 44px; height: 44px; border: 1px solid #1a1b1c; display: grid; place-items: center; transform: rotate(45deg); transition: transform .25s; }
 .mini-diamond { font-size: 8px; }
 .mini-diamond > *, .nav-diamond span { transform: rotate(-45deg); }
 .experience-link:hover .mini-diamond, .nav-button:hover .nav-diamond { transform: rotate(45deg) scale(1.08); }
-.edge-diamond { position: absolute; width: 390px; height: 390px; border: 1px dotted #aaa; transform: rotate(45deg); opacity: .45; }
+.edge-diamond { position: absolute; width: 390px; height: 390px; border: 1px dotted #aaa; transform: rotate(45deg); opacity: .45; animation: edge-breathe 7s ease-in-out infinite; }
 .edge-diamond::before { content: ''; position: absolute; inset: 25px; border: 1px dotted #aaa; }
 .left-edge { left: -340px; }.right-edge { right: -340px; }
+@keyframes hero-reveal { from { opacity: 0; transform: translateY(34px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes enter-from-left { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes enter-from-right { from { opacity: 0; transform: translateX(36px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes edge-breathe { 0%, 100% { opacity: .28; scale: .94; } 50% { opacity: .58; scale: 1.04; } }
 .flow-page, .capture-page, .analysis-page, .summary-page { min-height: calc(100vh - 64px); position: relative; padding: 24px 32px 100px; }
 .eyebrow { font-size: 12px; font-weight: 600; margin: 0; }
 .diamond-stage { width: min(680px, 78vw); aspect-ratio: 1; position: absolute; left: 50%; top: 48%; transform: translate(-50%, -50%); display: grid; place-items: center; }
@@ -71,7 +78,7 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 760px) {
   .site-header { padding: 0 16px; }.section-tag { display: none; }.code-button { padding: 8px 10px; }
   .home-page { overflow: hidden; }
-  .hero-copy h1 { font-size: clamp(44px, 17vw, 58px); }.hero-copy p { left: 20px; right: 20px; bottom: 26px; width: auto; text-align: center; }.experience-link { right: 50%; top: 65%; transform: translateX(50%); }
+  .hero-copy h1 { font-size: clamp(44px, 17vw, 58px); }.hero-copy p { left: 20px; right: 20px; bottom: 26px; width: auto; text-align: center; }.experience-link { right: 22px; top: 65%; transform: none; }.discover-link { left: 22px; top: 65%; }
   .edge-diamond { width: 280px; height: 280px; }.left-edge { display: none; }.right-edge { right: -235px; }
   .flow-page, .capture-page, .analysis-page, .summary-page { padding: 20px 16px 100px; }
   .intake-form input { font-size: 35px; }.bottom-nav { left: 18px; right: 18px; }
@@ -96,7 +103,7 @@ a { color: inherit; text-decoration: none; }
 .take-picture-label { position: absolute; right: 135px; top: 50%; transform: translateY(-50%); color: white; font-size: 10px; }
 .shot-status { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); color: white; font-size: 11px; }
 .photo-tips { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); color: white; font-size: 9px; text-align: center; line-height: 2.4; white-space: nowrap; }
-.camera-actions { position: absolute; right: 30px; bottom: 30px; display: flex; gap: 12px; }
+.camera-actions { position: absolute; z-index: 30; right: 30px; bottom: 30px; display: flex; gap: 12px; }
 .camera-actions button { border: 1px solid white; color: white; background: transparent; padding: 10px 18px; font-size: 10px; cursor: pointer; }
 .camera-actions button:last-child { background: white; color: #1a1b1c; }
 .analysis-menu-wrap { width: 560px; height: 560px; position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%); display: grid; place-items: center; }
@@ -107,12 +114,21 @@ a { color: inherit; text-decoration: none; }
 .summary-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 .summary-actions button { padding: 9px 18px; border: 1px solid #1a1b1c; background: white; font-size: 10px; cursor: pointer; }
 .summary-actions .confirm { color: white; background: #1a1b1c; }
+.camera-page .bottom-nav { pointer-events: none; }
+.camera-page .bottom-nav .nav-button { pointer-events: auto; }
+.camera-actions button:disabled { cursor: wait; opacity: .6; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
 
 @media (max-width: 760px) {
   .camera-modal { margin-left: 0; }
   .take-picture-label { display: none; }
   .photo-tips { bottom: 22px; width: 100%; white-space: normal; line-height: 1.8; }
   .camera-actions { bottom: 90px; right: 50%; transform: translateX(50%); }
+  .discover-link, .experience-link { gap: 10px; font-size: 9px; }
+  .discover-link .mini-diamond, .experience-link .mini-diamond { width: 34px; height: 34px; }
   .shot-status { top: 16%; }
   .analysis-menu-wrap { width: 350px; height: 350px; }
 }
