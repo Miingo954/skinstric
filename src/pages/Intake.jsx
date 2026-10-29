@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Diamond from '../components/Diamond'
 import NavButton from '../components/NavButton'
+import LoadingState from '../components/LoadingState'
 import { submitIdentity } from '../lib/api'
 
 const lettersOnly = /^[a-zA-Z\s'-]+$/
@@ -44,10 +45,10 @@ export default function Intake() {
             placeholder={step === 'name' ? 'Introduce Yourself' : 'your city name'}
           />
           {error && <p className="error-text">{error}</p>}
-          {loading && <p className="loading-text">PREPARING YOUR ANALYSIS...</p>}
           <button className="sr-only" type="submit">Continue</button>
         </form>
       </Diamond>
+      {loading && <LoadingState />}
       <div className="bottom-nav"><NavButton to="/" direction="back" label="BACK" /></div>
     </main>
   )

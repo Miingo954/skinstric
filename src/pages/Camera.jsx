@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import NavButton from '../components/NavButton'
+import LoadingState from '../components/LoadingState'
 import { analyzeImage } from '../lib/api'
 
 export default function Camera() {
@@ -65,6 +66,7 @@ export default function Camera() {
       <div className="photo-tips"><span>TO GET BETTER RESULTS MAKE SURE TO HAVE</span><div>◇ NEUTRAL EXPRESSION　 ◇ FRONTAL POSE　 ◇ ADEQUATE LIGHTING</div></div>
       {captured && <div className="camera-actions"><button type="button" onClick={retry} disabled={loading}>RETAKE</button><button type="button" onClick={proceed} disabled={loading}>{loading ? 'ANALYZING...' : 'PROCEED'}</button></div>}
       {error && <p className="camera-error">{error}</p>}
+      {loading && <LoadingState label="Preparing your analysis" />}
       <div className="bottom-nav light"><NavButton to="/result" direction="back" label="BACK" /></div>
     </main>
   )

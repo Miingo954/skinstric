@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Diamond from '../components/Diamond'
 import NavButton from '../components/NavButton'
+import LoadingState from '../components/LoadingState'
 import { analyzeImage } from '../lib/api'
 import { fileToDataUrl } from '../lib/image'
 
@@ -53,6 +54,7 @@ export default function Capture() {
           <div><button onClick={() => setCameraPrompt(false)}>DENY</button><button onClick={() => navigate('/camera')}>ALLOW</button></div>
         </div>
       </div>}
+      {loading && <LoadingState label="Preparing your analysis" />}
       <div className="bottom-nav"><NavButton to="/testing" direction="back" label="BACK" /></div>
     </main>
   )

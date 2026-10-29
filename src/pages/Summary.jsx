@@ -31,7 +31,7 @@ export default function Summary() {
         </div>
         <div className="confidence-panel">
           <strong>{current.name}{category === 'age' ? ' y.o.' : ''}</strong>
-          <div className="progress-ring" style={{ '--score': `${current.confidence * 3.6}deg` }}><span>{current.confidence}<small>%</small></span></div>
+          <div key={`${category}-${current.name}`} className="progress-ring" style={{ '--score': `${current.confidence * 3.6}deg` }}><span>{current.confidence}<small>%</small></span></div>
           <p>If A.I. estimate is wrong, select the correct one.</p>
         </div>
         <div className="option-list">
