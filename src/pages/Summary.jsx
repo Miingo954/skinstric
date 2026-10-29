@@ -15,8 +15,10 @@ function normalize(source = fallback) {
 
 export default function Summary() {
   const options = useMemo(() => normalize(readAnalysis() || fallback), [])
+  const initial = useMemo(() => ({ race: options.race[0], age: options.age[0], gender: options.gender[0] }), [options])
   const [category, setCategory] = useState('race')
-  const [selected, setSelected] = useState({ race: options.race[0], age: options.age[0], gender: options.gender[0] })
+  const [selected, setSelected] = useState(initial)
+  const [confirmed, setConfirmed] = useState(false)
   const current = selected[category]
   return (
     <main className="summary-page">
@@ -37,6 +39,7 @@ export default function Summary() {
           {options[category].map((option) => <button className={option.name === current.name ? 'active' : ''} onClick={() => setSelected((old) => ({ ...old, [category]: option }))} key={option.name}><span><i />{option.name}</span><span>{option.confidence}%</span></button>)}
         </div>
       </section>
+      <div className="summary-actions"><button onClick={() => { setSelected(initial); setConfirmed(false) }}>RESET</button><button className="confirm" onClick={() => setConfirmed(true)}>{confirmed ? 'CONFIRMED' : 'CONFIRM'}</button></div>
       <div className="bottom-nav split"><NavButton to="/select" direction="back" label="BACK" /><NavButton to="/" label="HOME" /></div>
     </main>
   )

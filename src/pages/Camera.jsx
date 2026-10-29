@@ -9,6 +9,7 @@ export default function Camera() {
   const navigate = useNavigate()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [captured, setCaptured] = useState('')
 
   useEffect(() => {
     navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'user' }, audio: false })
@@ -17,25 +18,44 @@ export default function Camera() {
     return () => streamRef.current?.getTracks().forEach((track) => track.stop())
   }, [])
 
-  async function capture() {
+  function capture() {
     if (!videoRef.current?.videoWidth) return
-    setLoading(true)
     const canvas = document.createElement('canvas')
     canvas.width = videoRef.current.videoWidth
     canvas.height = videoRef.current.videoHeight
     canvas.getContext('2d').drawImage(videoRef.current, 0, 0)
     const image = canvas.toDataURL('image/jpeg', 0.78)
     localStorage.setItem('skinstric-image', image)
-    try { await analyzeImage(image); navigate('/select') }
+    setCaptured(image)
+    streamRef.current?.getTracks().forEach((track) => track.stop())
+  }
+
+  async function proceed() {
+    if (!captured) return
+    setLoading(true)
+    try { await analyzeImage(captured); navigate('/select') }
     catch (err) { setError(err.message); setLoading(false) }
+  }
+
+  async function retry() {
+    setCaptured(''); setError('')
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+      streamRef.current = stream
+      videoRef.current.srcObject = stream
+      await videoRef.current.play()
+    } catch { setError('Camera access was blocked. Please allow it or use gallery upload.') }
   }
 
   return (
     <main className="camera-page">
-      <video ref={videoRef} autoPlay playsInline muted aria-label="Camera preview" />
-      <div className="camera-overlay"><span className="face-guide" /></div>
-      <button className="shutter" type="button" onClick={capture} disabled={loading} aria-label="Take picture"><span /></button>
-      <p className="camera-help">{loading ? 'ANALYZING...' : 'CENTER YOUR FACE AND TAKE A PICTURE'}</p>
+      <video ref={videoRef} autoPlay playsInline muted aria-label="Camera preview" className={captured ? 'hidden' : ''} />
+      {captured && <img className="captured-photo" src={captured} alt="Captured selfie" />}
+      {!captured && <button className="shutter" type="button" onClick={capture} disabled={loading} aria-label="Take picture"><span /></button>}
+      {!captured && <span className="take-picture-label">TAKE PICTURE</span>}
+      <p className="shot-status">{captured ? 'GREAT SHOT!' : ''}</p>
+      <div className="photo-tips"><span>TO GET BETTER RESULTS MAKE SURE TO HAVE</span><div>◇ NEUTRAL EXPRESSION　 ◇ FRONTAL POSE　 ◇ ADEQUATE LIGHTING</div></div>
+      {captured && <div className="camera-actions"><button onClick={retry}>RETAKE</button><button onClick={proceed} disabled={loading}>{loading ? 'ANALYZING...' : 'PROCEED'}</button></div>}
       {error && <p className="camera-error">{error}</p>}
       <div className="bottom-nav light"><NavButton to="/result" direction="back" label="BACK" /></div>
     </main>
