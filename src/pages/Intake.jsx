@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Diamond from '../components/Diamond'
 import NavButton from '../components/NavButton'
 import LoadingState from '../components/LoadingState'
-import { submitIdentity } from '../lib/api'
+import { submitIdentity, withMinimumDelay } from '../lib/api'
 
 const lettersOnly = /^[a-zA-Z\s'-]+$/
 
@@ -26,7 +26,7 @@ export default function Intake() {
     if (step === 'name') { localStorage.setItem('skinstric-name', name.trim()); setStep('location'); return }
     localStorage.setItem('skinstric-location', location.trim())
     setLoading(true)
-    try { await submitIdentity(name.trim(), location.trim()); navigate('/result') }
+    try { await withMinimumDelay(submitIdentity(name.trim(), location.trim())); navigate('/result') }
     catch (err) { setError(err.message) }
     finally { setLoading(false) }
   }

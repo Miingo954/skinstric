@@ -1,6 +1,16 @@
 export const PHASE_ONE_URL = 'https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseOne'
 export const PHASE_TWO_URL = 'https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseTwo'
 
+export async function withMinimumDelay(request, minimumMs = 2000) {
+  const startedAt = Date.now()
+  try {
+    return await request
+  } finally {
+    const remaining = minimumMs - (Date.now() - startedAt)
+    if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining))
+  }
+}
+
 export async function submitIdentity(name, location) {
   const response = await fetch(PHASE_ONE_URL, {
     method: 'POST',

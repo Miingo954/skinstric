@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Diamond from '../components/Diamond'
 import NavButton from '../components/NavButton'
 import LoadingState from '../components/LoadingState'
-import { analyzeImage } from '../lib/api'
+import { analyzeImage, withMinimumDelay } from '../lib/api'
 import { fileToDataUrl } from '../lib/image'
 
 export default function Capture() {
@@ -22,7 +22,7 @@ export default function Capture() {
       const dataUrl = await fileToDataUrl(file)
       setPreview(dataUrl)
       localStorage.setItem('skinstric-image', dataUrl)
-      await analyzeImage(dataUrl)
+      await withMinimumDelay(analyzeImage(dataUrl))
       navigate('/select')
     } catch (err) { setError(err.message) }
     finally { setLoading(false) }

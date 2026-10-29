@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import NavButton from '../components/NavButton'
 import LoadingState from '../components/LoadingState'
-import { analyzeImage } from '../lib/api'
+import { analyzeImage, withMinimumDelay } from '../lib/api'
 
 export default function Camera() {
   const videoRef = useRef(null)
@@ -37,7 +37,7 @@ export default function Camera() {
     setLoading(true)
     setError('')
     try {
-      await analyzeImage(image)
+      await withMinimumDelay(analyzeImage(image))
       navigate('/select')
     } catch (err) {
       setError(err.message || 'Unable to analyze this image. Please retake it and try again.')
